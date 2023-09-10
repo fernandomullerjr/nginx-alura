@@ -544,9 +544,9 @@ Commercial support is available at
 
 
 
+- Erro no push
 
-
-
+~~~~bash
 fernando@debian10x64:~/cursos/nginx-alura$
 fernando@debian10x64:~/cursos/nginx-alura$ git push --set-upstream origin main
 
@@ -555,3 +555,8 @@ error: update_ref failed for ref 'refs/remotes/origin/main': cannot lock ref 're
 Everything up-to-date
 fernando@debian10x64:~/cursos/nginx-alura$
 fernando@debian10x64:~/cursos/nginx-alura$
+
+
+
+
+~~~~
