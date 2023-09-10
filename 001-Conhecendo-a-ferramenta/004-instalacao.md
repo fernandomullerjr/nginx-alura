@@ -60,3 +60,31 @@ git status
 [03:44] Então o NGINX está ouvindo essa porta aqui e ele está configurado para responder com esse HTML, ou seja, o nosso servidor web já está funcionando.
 
 [03:55] Claro, o que queremos fazer é colocar alguma aplicação real para ser exibida aqui, então não queremos ver somente a mensagem padrão do NGINX. Então a partir do próximo capítulo vamos começar a conhecer os arquivos de configuração do NGINX.
+
+
+
+
+
+# #####################################################################################################################################################
+# #####################################################################################################################################################
+# #####################################################################################################################################################
+# #####################################################################################################################################################
+# 04 Instalação
+
+- Instalando
+sudo apt update
+sudo apt install nginx
+
+
+- Abrindo página local
+http://192.168.0.110/
+
+
+Welcome to nginx!
+
+If you see this page, the nginx web server is successfully installed and working. Further configuration is required.
+
+For online documentation and support please refer to nginx.org.
+Commercial support is available at nginx.com.
+
+Thank you for using nginx.
