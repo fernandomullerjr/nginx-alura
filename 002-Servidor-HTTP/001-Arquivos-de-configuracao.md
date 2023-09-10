@@ -544,3 +544,14 @@ Commercial support is available at
 
 
 
+
+
+
+fernando@debian10x64:~/cursos/nginx-alura$
+fernando@debian10x64:~/cursos/nginx-alura$ git push --set-upstream origin main
+
+Branch 'main' set up to track remote branch 'main' from 'origin'.
+error: update_ref failed for ref 'refs/remotes/origin/main': cannot lock ref 'refs/remotes/origin/main': unable to resolve reference 'refs/remotes/origin/main': reference broken
+Everything up-to-date
+fernando@debian10x64:~/cursos/nginx-alura$
+fernando@debian10x64:~/cursos/nginx-alura$
