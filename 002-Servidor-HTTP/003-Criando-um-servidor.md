@@ -85,3 +85,67 @@ server {
         listen 8080;
         server_name localhost;
 }
+
+
+
+
+[04:16] Defini o root do meu servidor, mas e se eu acessar simplesmente ‘localhost’? Fizer isso sem colocar o nome de algum arquivo? Eu posso definir um arquivo padrão que vai ser carregado através do ‘index’.
+
+[04:29] Então vou dar o nome deste arquivo de index.html, igual nós já tínhamos lá. Teoricamente configurado, agora se eu vir aqui no meu navegador e acessar https://localhost:80 ou eu posso até omitir esse ‘80’ (porque é a porta padrão HTTP), eu espero receber alguma coisa tentando acessar aquele arquivo, ou algo do tipo, um ‘404’ou algo assim.
+
+
+
+
+root@debian10x64:/etc/nginx/sites-enabled#
+root@debian10x64:/etc/nginx/sites-enabled# vi default-2.conf
+root@debian10x64:/etc/nginx/sites-enabled#
+root@debian10x64:/etc/nginx/sites-enabled#
+root@debian10x64:/etc/nginx/sites-enabled#
+root@debian10x64:/etc/nginx/sites-enabled# cat default-2.conf
+server {
+        listen 8080;
+        server_name localhost;
+
+        location / {
+            root /home/fernando/cursos/nginx-alura/002-Servidor-HTTP/arquivos-para-aula;
+            index index.html;
+        }
+}
+root@debian10x64:/etc/nginx/sites-enabled# nginx -t
+nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+nginx: configuration file /etc/nginx/nginx.conf test is successful
+root@debian10x64:/etc/nginx/sites-enabled# date
+Mon 11 Sep 2023 12:04:23 AM -03
+root@debian10x64:/etc/nginx/sites-enabled#
+
+
+
+
+http://192.168.0.110:8080/
+<http://192.168.0.110:8080/>
+
+403 Forbidden
+nginx/1.14.2
+
+
+
+
+
+- Criado arquivo html
+arquivos-para-aula/index.html
+
+- Novo teste
+
+http://192.168.0.110:8080/
+<http://192.168.0.110:8080/>
+
+abriu:
+
+PÃ¡gina de teste 2!
+
+Se abrir, indica que o teste estÃ¡ OK.
+
+For online documentation and support please refer to nginx.org.
+Commercial support is available at nginx.com.
+
+Thank you for using nginx.
