@@ -78,3 +78,10 @@ Transcrição
 
 - Criando um default novo para a aula 3
 /home/fernando/cursos/nginx-alura/002-Servidor-HTTP/sites/default_v2.conf
+
+Vamos configurar a porta 8080, pois a 80 já está em uso pelo nginx server default original
+
+server {
+        listen 8080;
+        server_name localhost;
+}
