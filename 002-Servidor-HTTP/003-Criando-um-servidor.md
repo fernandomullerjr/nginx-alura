@@ -81,11 +81,12 @@ Transcrição
 
 Vamos configurar a porta 8080, pois a 80 já está em uso pelo nginx server default original
 
+~~~~conf
 server {
         listen 8080;
         server_name localhost;
 }
-
+~~~~
 
 
 
@@ -95,7 +96,7 @@ server {
 
 
 
-
+~~~~bash
 root@debian10x64:/etc/nginx/sites-enabled#
 root@debian10x64:/etc/nginx/sites-enabled# vi default-2.conf
 root@debian10x64:/etc/nginx/sites-enabled#
@@ -117,7 +118,7 @@ nginx: configuration file /etc/nginx/nginx.conf test is successful
 root@debian10x64:/etc/nginx/sites-enabled# date
 Mon 11 Sep 2023 12:04:23 AM -03
 root@debian10x64:/etc/nginx/sites-enabled#
-
+~~~~
 
 
 
