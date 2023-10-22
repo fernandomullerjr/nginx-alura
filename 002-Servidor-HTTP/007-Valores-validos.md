@@ -37,3 +37,15 @@ Precisamos informar pelo menos um código HTTP para definir a página de erro
 
 Precisamos definir o caminho de um arquivo existente
 
+
+
+
+
+## RESPOSTA
+
+Precisamos definir o caminho de um arquivo existente
+
+
+Alternativa correta! Essa afirmação é falsa pois no caminho informado ao error_page nós podemos ter um valor que corresponde a alguma diretiva location.
+
+Parabéns, você acertou!
