@@ -63,3 +63,149 @@ git status
 # 03 Configurando
 
 
+- Criado arquivo de configuração contendo o "proxy_pass", que vai direcionar todo o tráfego destinado a porta 9577, para o nosso site existente na porta 8080:
+
+~~~~conf
+server {
+        listen 9577;
+        server_name localhost;
+
+        location / {
+            proxy_pass http://localhost:8080;
+        }
+}
+~~~~
+
+
+
+- Aplicando a conf:
+
+~~~~bash
+root@debian10x64:/home/fernando# cd /etc/nginx/sites-enabled/
+root@debian10x64:/etc/nginx/sites-enabled# ls
+site-aula-nginx.conf
+root@debian10x64:/etc/nginx/sites-enabled# vi teste-proxy-reverso.conf
+root@debian10x64:/etc/nginx/sites-enabled#
+root@debian10x64:/etc/nginx/sites-enabled#
+root@debian10x64:/etc/nginx/sites-enabled#
+root@debian10x64:/etc/nginx/sites-enabled#
+root@debian10x64:/etc/nginx/sites-enabled# nginx -t
+nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+nginx: configuration file /etc/nginx/nginx.conf test is successful
+root@debian10x64:/etc/nginx/sites-enabled#
+root@debian10x64:/etc/nginx/sites-enabled#
+root@debian10x64:/etc/nginx/sites-enabled# nginx -s reload
+root@debian10x64:/etc/nginx/sites-enabled#
+root@debian10x64:/etc/nginx/sites-enabled#
+root@debian10x64:/etc/nginx/sites-enabled#
+root@debian10x64:/etc/nginx/sites-enabled# ls
+site-aula-nginx.conf  teste-proxy-reverso.conf
+root@debian10x64:/etc/nginx/sites-enabled#
+~~~~
+
+
+
+- Testando, acesso direto, envia para a página da porta 8080:
+
+~~~~bash
+root@debian10x64:/etc/nginx/sites-enabled# curl http://192.168.0.110:9577/
+<!DOCTYPE html>
+<html>
+<head>
+<title>Página de teste 2!</title>
+<style>
+    body {
+        width: 35em;
+        margin: 0 auto;
+        font-family: Tahoma, Verdana, Arial, sans-serif;
+    }
+</style>
+</head>
+<body>
+<h1>Página de teste 2!</h1>
+<p>Se abrir, indica que o teste está OK.</p>
+
+<p>For online documentation and support please refer to
+<a href="http://nginx.org/">nginx.org</a>.<br/>
+Commercial support is available at
+<a href="http://nginx.com/">nginx.com</a>.</p>
+
+<p><em>Thank you for using nginx.</em></p>
+</body>
+</html>root@debian10x64:/etc/nginx/sites-enabled#
+~~~~
+
+
+
+
+- Testando uma página incorreta, abre a página de erro personalizada que foi configurada no site com porta 8080 anteriormente:
+
+~~~~bash
+root@debian10x64:/etc/nginx/sites-enabled#
+root@debian10x64:/etc/nginx/sites-enabled#
+root@debian10x64:/etc/nginx/sites-enabled#
+root@debian10x64:/etc/nginx/sites-enabled# curl http://192.168.0.110:9577/alguma-coisa
+<!DOCTYPE html>
+<html>
+<head>
+<title>Erro!</title>
+<style>
+    body {
+        width: 35em;
+        margin: 0 auto;
+        font-family: Tahoma, Verdana, Arial, sans-serif;
+    }
+</style>
+</head>
+<body>
+<h1>Erro ao tentar acessar este caminho.</h1>
+
+<p>For online documentation and support please refer to
+<a href="http://nginx.org/">nginx.org</a>.<br/>
+Commercial support is available at
+<a href="http://nginx.com/">nginx.com</a>.</p>
+
+<p><em>Thank you for using nginx.</em></p>
+</body>
+</html>root@debian10x64:/etc/nginx/sites-enabled#
+root@debian10x64:/etc/nginx/sites-enabled#
+root@debian10x64:/etc/nginx/sites-enabled#
+
+~~~~
+
+
+
+
+
+- Testando acesso a página html do erro, acesso ocorre como se fosse para o site da porta 8080 direto:
+
+~~~~bash
+root@debian10x64:/etc/nginx/sites-enabled#
+root@debian10x64:/etc/nginx/sites-enabled#
+root@debian10x64:/etc/nginx/sites-enabled#
+root@debian10x64:/etc/nginx/sites-enabled# curl http://192.168.0.110:9577/erro.html
+<!DOCTYPE html>
+<html>
+<head>
+<title>Erro!</title>
+<style>
+    body {
+        width: 35em;
+        margin: 0 auto;
+        font-family: Tahoma, Verdana, Arial, sans-serif;
+    }
+</style>
+</head>
+<body>
+<h1>Erro ao tentar acessar este caminho.</h1>
+
+<p>For online documentation and support please refer to
+<a href="http://nginx.org/">nginx.org</a>.<br/>
+Commercial support is available at
+<a href="http://nginx.com/">nginx.com</a>.</p>
+
+<p><em>Thank you for using nginx.</em></p>
+</body>
+</html>root@debian10x64:/etc/nginx/sites-enabled#
+
+~~~~
