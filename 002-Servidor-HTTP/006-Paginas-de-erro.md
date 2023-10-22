@@ -179,3 +179,110 @@ Thank you for using nginx.
 
 ## PENDENTE
 - Ver porque a página de erro só é carregada acessando o html dela direto. Verificar questão dos multiplos sites que tem na sites-enabled.
+
+
+
+
+
+
+# #####################################################################################################################################################
+# #####################################################################################################################################################
+# #####################################################################################################################################################
+# #####################################################################################################################################################
+# Dia 21/10/2023
+
+- Ver porque a página de erro só é carregada acessando o html dela direto. Verificar questão dos multiplos sites que tem na sites-enabled.
+
+
+
+- Ajustando, removendo sites adicionais na pasta sites-enabled:
+
+~~~~bash
+root@debian10x64:/etc/nginx# ls sites-enabled/
+default  default-2.conf  default-3.conf
+root@debian10x64:/etc/nginx#
+
+root@debian10x64:/etc/nginx# ls sites-enabled/
+default  default-2.conf  default-3.conf
+root@debian10x64:/etc/nginx# rm sites-enabled/default
+root@debian10x64:/etc/nginx# rm sites-enabled/default-2.conf
+root@debian10x64:/etc/nginx#
+root@debian10x64:/etc/nginx#
+root@debian10x64:/etc/nginx#
+root@debian10x64:/etc/nginx# mv sites-enabled/default-3.conf sites-enabled/site-aula-nginx.conf
+root@debian10x64:/etc/nginx#
+root@debian10x64:/etc/nginx#
+root@debian10x64:/etc/nginx#
+root@debian10x64:/etc/nginx#
+root@debian10x64:/etc/nginx# ls sites-enabled/
+site-aula-nginx.conf
+root@debian10x64:/etc/nginx#
+~~~~
+
+
+
+
+- Efetuando validação e reload do NGINX:
+
+~~~~bash
+root@debian10x64:/etc/nginx# nginx -t
+nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+nginx: configuration file /etc/nginx/nginx.conf test is successful
+root@debian10x64:/etc/nginx#
+root@debian10x64:/etc/nginx#
+root@debian10x64:/etc/nginx# nginx -s reload
+root@debian10x64:/etc/nginx#
+~~~~
+
+
+- Novo teste, agora abre a mensagem de erro esperada:
+
+http://192.168.0.110:8080/alguma-coisa
+
+~~~~bash
+
+root@debian10x64:/etc/nginx# curl -v http://192.168.0.110:8080/alguma-coisa
+* Expire in 0 ms for 6 (transfer 0x559939bd2fb0)
+*   Trying 192.168.0.110...
+* TCP_NODELAY set
+* Expire in 200 ms for 4 (transfer 0x559939bd2fb0)
+* Connected to 192.168.0.110 (192.168.0.110) port 8080 (#0)
+> GET /alguma-coisa HTTP/1.1
+> Host: 192.168.0.110:8080
+> User-Agent: curl/7.64.0
+> Accept: */*
+>
+< HTTP/1.1 404 Not Found
+< Server: nginx/1.14.2
+< Date: Sun, 22 Oct 2023 02:15:20 GMT
+< Content-Type: text/html
+< Content-Length: 494
+< Connection: keep-alive
+< ETag: "6504f33a-1ee"
+<
+<!DOCTYPE html>
+<html>
+<head>
+<title>Erro!</title>
+<style>
+    body {
+        width: 35em;
+        margin: 0 auto;
+        font-family: Tahoma, Verdana, Arial, sans-serif;
+    }
+</style>
+</head>
+<body>
+<h1>Erro ao tentar acessar este caminho.</h1>
+
+<p>For online documentation and support please refer to
+<a href="http://nginx.org/">nginx.org</a>.<br/>
+Commercial support is available at
+<a href="http://nginx.com/">nginx.com</a>.</p>
+
+<p><em>Thank you for using nginx.</em></p>
+</body>
+* Connection #0 to host 192.168.0.110 left intact
+</html>root@debian10x64:/etc/nginx#
+
+~~~~
