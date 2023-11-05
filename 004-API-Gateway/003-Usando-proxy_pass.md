@@ -189,3 +189,36 @@ root@debian10x64:/etc/nginx/sites-enabled#
 - O "proxy_pass" para o localhost existe nestes 2 arquivos apenas:
 site-aula-nginx.conf
 teste-proxy-reverso.conf
+
+
+- Acessando a url mencionada no video, ele joga para página de erro, ao invés de abrir a página do "Serviço 2", conforme ocorria com o professor no ambiente dele:
+http://192.168.0.110:8080/servico2/index.html
+<http://192.168.0.110:8080/servico2/index.html>
+
+
+root@debian10x64:/etc/nginx/sites-enabled# curl http://192.168.0.110:8080/servico2/index.html
+<!DOCTYPE html>
+<html>
+<head>
+<title>Erro!</title>
+<style>
+    body {
+        width: 35em;
+        margin: 0 auto;
+        font-family: Tahoma, Verdana, Arial, sans-serif;
+    }
+</style>
+</head>
+<body>
+<h1>Erro ao tentar acessar este caminho.</h1>
+
+<p>For online documentation and support please refer to
+<a href="http://nginx.org/">nginx.org</a>.<br/>
+Commercial support is available at
+<a href="http://nginx.com/">nginx.com</a>.</p>
+
+<p><em>Thank you for using nginx.</em></p>
+</body>
+</html>root@debian10x64:/etc/nginx/sites-enabled#
+
+
