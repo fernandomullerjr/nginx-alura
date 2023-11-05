@@ -222,3 +222,82 @@ Commercial support is available at
 </html>root@debian10x64:/etc/nginx/sites-enabled#
 
 
+
+
+
+
+
+
+
+
+[04:00] Quando eu acessar location /servico1 { o que eu quero fazer é um proxy_pass http://localhost:8001/;. Aqui eu vou adicionar a barra no final, por quê? Você já vai entender.
+
+[04:15] Deixe-me voltar para o último comando location - que será o location /servico2 { - proxy_pass http://localhost:8002/;.
+
+[04:23] E agora deixe-me te explicar o motivo para aqui na segunda linha do primeiro location eu não ter a barra no final e nessa última linha de location eu ter.
+
+[04:31] Quando eu acessar ‘/servico1’, eu quero mandar para localhost: 8001. Só que se eu digitar ‘/servico1/teste’, eu quero mandar para “localhost:8001/teste” e não para “localhost:8001/servico/teste”.
+
+[04:48] Então se eu remover essa barra aqui, ele vai adicionar o que passamos no location aqui no final. Já, se eu coloco a barra, ele vai ignorar o que recebeu no location do servidor original e mandar só a partir de “servico1”.
+
+
+
+- Após edição, o arquivo de conf do NGINX "site-aula-nginx.conf" ficou desta maneira:
+
+/home/fernando/cursos/nginx-alura/004-API-Gateway/sites/site-aula-nginx.conf
+
+~~~~CONF
+server {
+        listen 8080;
+        server_name localhost;
+
+        location / {
+            root /home/fernando/cursos/nginx-alura/002-Servidor-HTTP/arquivos-para-aula;
+            index index.html;
+        }
+
+        location ~ \.php$ {
+            proxy_pass http://localhost:8000;
+        }
+
+        location /servico1 {
+            proxy_pass http://localhost:8001/;
+        }
+
+        location /servico2 {
+            proxy_pass http://localhost:8002/;
+        }
+
+        error_page 404 400 401 /erro.html;
+}
+~~~~
+
+
+
+- Ajustando e testando:
+
+~~~~bash
+
+root@debian10x64:/etc/nginx/sites-enabled# vi site-aula-nginx.conf
+root@debian10x64:/etc/nginx/sites-enabled#
+root@debian10x64:/etc/nginx/sites-enabled#
+root@debian10x64:/etc/nginx/sites-enabled# nginx -t
+nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+nginx: configuration file /etc/nginx/nginx.conf test is successful
+root@debian10x64:/etc/nginx/sites-enabled#
+root@debian10x64:/etc/nginx/sites-enabled#
+root@debian10x64:/etc/nginx/sites-enabled# nginx -s reload
+root@debian10x64:/etc/nginx/sites-enabled#
+root@debian10x64:/etc/nginx/sites-enabled#
+root@debian10x64:/etc/nginx/sites-enabled#
+
+
+root@debian10x64:/etc/nginx/sites-enabled# curl http://192.168.0.110:8080/servico1
+Serviço 1
+root@debian10x64:/etc/nginx/sites-enabled#
+root@debian10x64:/etc/nginx/sites-enabled#
+root@debian10x64:/etc/nginx/sites-enabled# curl http://192.168.0.110:8080/servico2
+Serviço 2
+root@debian10x64:/etc/nginx/sites-enabled#
+
+~~~~
