@@ -76,3 +76,116 @@ git status
 [06:12] Então, eu poderia, por exemplo, aqui na nossa configuração (imagine aquele seu servidor ‘api.alura.com.br’) colocar aqui na localização ‘/financeiro’ e eu mandar para o nosso serviço de financeiro; ‘/academico’. Eu mandaria para o servidor que tem o serviço acadêmico.
 
 [06:32] Então, dessa forma, eu teria um ponto de entrada para acessar vários servidores. Isso tem um nome bastante específico – e é sobre esse nome e essa técnica que eu vou falar no próximo vídeo!
+
+
+
+
+
+
+
+# #####################################################################################################################################################
+# #####################################################################################################################################################
+# #####################################################################################################################################################
+# #####################################################################################################################################################
+# 03 Usando proxy_pass
+
+
+- Criar arquivo de conf que vai ter os 2 microserviços:
+
+/home/fernando/cursos/nginx-alura/004-API-Gateway/sites/microservicos.conf
+
+~~~~conf
+server {
+        listen 8001;
+        server_name localhost;
+
+        location / {
+            root /home/fernando/cursos/nginx-alura/004-API-Gateway/arquivos/servico1;
+            index index.html;
+        }
+
+}
+
+server {
+        listen 8002;
+        server_name localhost;
+
+        location / {
+            root /home/fernando/cursos/nginx-alura/004-API-Gateway/arquivos/servico2;
+            index index.html;
+        }
+
+}
+~~~~
+
+
+
+- Criados os arquivos html
+/home/fernando/cursos/nginx-alura/004-API-Gateway/arquivos/servico1/index.html
+/home/fernando/cursos/nginx-alura/004-API-Gateway/arquivos/servico2/index.html
+
+- Ajustando no sites-enabled do NGINX:
+
+~~~~BASH
+
+root@debian10x64:/etc/nginx/sites-enabled# vi microservicos.conf
+root@debian10x64:/etc/nginx/sites-enabled#
+root@debian10x64:/etc/nginx/sites-enabled#
+root@debian10x64:/etc/nginx/sites-enabled#
+root@debian10x64:/etc/nginx/sites-enabled#
+root@debian10x64:/etc/nginx/sites-enabled#
+root@debian10x64:/etc/nginx/sites-enabled#
+root@debian10x64:/etc/nginx/sites-enabled# nginx -t
+nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+nginx: configuration file /etc/nginx/nginx.conf test is successful
+root@debian10x64:/etc/nginx/sites-enabled#
+root@debian10x64:/etc/nginx/sites-enabled#
+root@debian10x64:/etc/nginx/sites-enabled# nginx -s reload
+root@debian10x64:/etc/nginx/sites-enabled#
+root@debian10x64:/etc/nginx/sites-enabled#
+root@debian10x64:/etc/nginx/sites-enabled# date
+Sat 04 Nov 2023 10:18:23 PM -03
+root@debian10x64:/etc/nginx/sites-enabled# ls
+microservicos.conf  site-aula-nginx.conf  teste-proxy-reverso.conf
+root@debian10x64:/etc/nginx/sites-enabled#
+
+~~~~
+
+
+
+
+
+- Testando
+
+~~~~bash
+
+root@debian10x64:/etc/nginx/sites-enabled# curl http://192.168.0.110:8001/
+Serviço 1
+root@debian10x64:/etc/nginx/sites-enabled#
+root@debian10x64:/etc/nginx/sites-enabled#
+root@debian10x64:/etc/nginx/sites-enabled#
+root@debian10x64:/etc/nginx/sites-enabled# curl http://192.168.0.110:8002
+Serviço 2
+root@debian10x64:/etc/nginx/sites-enabled#
+root@debian10x64:/etc/nginx/sites-enabled#
+
+~~~~
+
+
+
+
+
+
+
+
+
+
+[02:35] Agora o que eu quero fazer é fazer que a partir do nosso localhost: 8080 (que é aquele nosso servidor padrão), eu redirecione. Quando eu chamar “serviço 1”, manda para o nosso localhost: 8001; quando chamar “serviço 2” manda para o localhost: 8002. Deixe-me ver aqui, isso aqui já está funcionando porque dentro da pasta “nginx”, eu tenho lá a pasta “servico2”, então ele buscou o arquivo “index.html”.
+
+
+
+- Necessário ajustar o nginx.conf, comentando o proxy_pass nele.
+- Verificando o nginx.conf, ele não tem a linha contendo "proxy_pass".
+- O "proxy_pass" para o localhost existe nestes 2 arquivos apenas:
+site-aula-nginx.conf
+teste-proxy-reverso.conf
