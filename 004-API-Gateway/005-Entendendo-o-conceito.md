@@ -65,3 +65,26 @@ git status
 [04:58] O que acontece se um servidor meu de aplicação real que realmente responde as requisições se um servidor meu, não o API Gateway, estiver recebendo muitas requisições a mais do que ele consegue responder? O que nós podemos fazer nesses cenários? Como nós podemos, por exemplo, ter mais de um servidor respondendo a mesma aplicação?
 
 [05:20] Então vamos conversar sobre esses cenários no próximo capítulo!
+
+
+
+
+
+
+
+
+
+# #####################################################################################################################################################
+# #####################################################################################################################################################
+# #####################################################################################################################################################
+# #####################################################################################################################################################
+# RESUMO
+
+
+[02:57] E o comportamento de um API Gateway é importante conhecermos porque ele pode simplesmente redirecionar as requisições e pode permitir ou não uma requisição, então através do NGINX eu poderia configurar para só deixar as requisições vindas de um IP, por exemplo. Isso seria possível.
+
+[03:16] Eu posso utilizar algum tipo de decorator para adicionar informações necessárias no request ou até para remover da resposta. Eu posso adicionar informações de cache nesse meu API Gateway e eu posso adicionar informações de compressão para melhorar performance. Então eu posso adicionar cabeçalhos na ida e eu posso adicionar cabeçalhos na resposta.
+
+[03:38] Então eu posso modificar esses detalhes e eu também posso acabar limitando o acesso. Assim como eu falei de autorizar ou não, eu posso utilizar essa ideia de API Gateway para limitar o acesso, o conteúdo trafegado e impedir que determinadas URLs sejam acessadas por completo. Então eu posso ter um controle a mais.
+
+
