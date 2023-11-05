@@ -56,3 +56,9 @@ git status
 [04:23] Dessa forma, voltando para o exemplo da Alura, é como se pela interface ele só precisasse conhecer “api.alura.com.br”, por exemplo. Baseado no endpoint, baseado na URL desse servidor, esse nosso proxy reverso manda para algum serviço, manda para o serviço financeiro, para o serviço acadêmico, serviço de gamificação etc.
 
 [04:48] Então é isso que vamos implementar nesse treinamento! No próximo vídeo nós vamos criar dois serviços pequenos e rotear entre eles. Fazer com que uma URL mande para um serviço e outra URL mande para outro serviço. Então te espero no próximo vídeo para botarmos a mão na massa!
+
+
+
+
+
+
