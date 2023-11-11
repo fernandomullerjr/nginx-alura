@@ -519,4 +519,113 @@ location /api/warehouse/ {
     "Responding to Errors"
 
 
+To achieve this separation, we create a configuration layout that supports a multi‑purpose NGINX instance, and provides a convenient structure for automating configuration deployment through CI/CD pipelines. The resulting directory structure under /etc/nginx looks like this.
 
+etc/
+└── nginx/
+    ├── api_conf.d/ ………………………………… Subdirectory for per-API configuration
+    │   └── warehouse_api.conf …… Definition and policy of the Warehouse API
+    ├── api_backends.conf ………………… The backend services (upstreams)
+    ├── api_gateway.conf …………………… Top-level configuration for the API gateway server
+    ├── api_json_errors.conf ………… HTTP error responses in JSON format
+    ├── conf.d/
+    │   ├── ...
+    │   └── existing_apps.conf
+    └── nginx.conf
+
+The directories and filenames for all API gateway configuration are prefixed with api_. Each of these files and directories enables a different feature or capability of the API gateway as explained in detail below. The warehouse_api.conf file is a generic stand‑in for the configuration files discussed below that define the Warehouse API in different ways.
+
+
+
+- Criados os arquivos:
+004-API-Gateway/sites/teste-paginas-de-erro.conf
+004-API-Gateway/sites/api_json_errors.conf
+
+~~~~conf
+server {
+        listen 9388;
+        server_name localhost;
+
+        # Error responses
+        error_page 404 = @400;         # Treat invalid paths as bad requests
+        proxy_intercept_errors on;     # Do not send backend errors to client
+        include api_json_errors.conf;  # API client-friendly JSON errors
+        default_type application/json; # If no content-type, assume JSON
+
+        location / {
+            proxy_pass http://localhost:8080;
+        }
+}
+~~~~
+
+
+
+- Validando:
+
+~~~~bash
+
+root@debian10x64:/etc/nginx# ls
+api_json_errors.conf  fastcgi.conf    koi-utf  mime.types         modules-enabled  proxy_params  sites-available  snippets      win-utf
+conf.d                fastcgi_params  koi-win  modules-available  nginx.conf       scgi_params   sites-enabled    uwsgi_params
+root@debian10x64:/etc/nginx#
+
+root@debian10x64:/etc/nginx/sites-enabled# ls
+microservicos.conf  site-aula-nginx.conf  teste-paginas-de-erro.conf  teste-proxy-reverso.conf
+root@debian10x64:/etc/nginx/sites-enabled#
+
+
+root@debian10x64:/etc/nginx# nginx -t
+nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+nginx: configuration file /etc/nginx/nginx.conf test is successful
+root@debian10x64:/etc/nginx#
+root@debian10x64:/etc/nginx#
+root@debian10x64:/etc/nginx# date
+Sat 11 Nov 2023 03:51:06 PM -03
+root@debian10x64:/etc/nginx#
+~~~~
+
+
+
+- Reiniciando o NGINX:
+
+~~~~BASH
+root@debian10x64:/etc/nginx# nginx -s reload
+root@debian10x64:/etc/nginx#
+~~~~
+
+
+
+- Testando
+
+http://192.168.0.110:9388/alguma-rota-errada
+<http://192.168.0.110:9388/alguma-rota-errada>
+
+~~~~bash
+
+root@debian10x64:/etc/nginx/sites-enabled# curl -v http://192.168.0.110:9388/alguma-rota-errada
+* Expire in 0 ms for 6 (transfer 0x56525ed07110)
+*   Trying 192.168.0.110...
+* TCP_NODELAY set
+* Expire in 200 ms for 4 (transfer 0x56525ed07110)
+* Connected to 192.168.0.110 (192.168.0.110) port 9388 (#0)
+> GET /alguma-rota-errada HTTP/1.1
+> Host: 192.168.0.110:9388
+> User-Agent: curl/7.64.0
+> Accept: */*
+>
+< HTTP/1.1 400 Bad Request
+< Server: nginx/1.14.2
+< Date: Sat, 11 Nov 2023 19:06:11 GMT
+< Content-Type: application/json
+< Content-Length: 39
+< Connection: keep-alive
+<
+{"status":400,"message":"Bad request"}
+* Connection #0 to host 192.168.0.110 left intact
+root@debian10x64:/etc/nginx/sites-enabled#
+root@debian10x64:/etc/nginx/sites-enabled#
+root@debian10x64:/etc/nginx/sites-enabled# date
+Sat 11 Nov 2023 04:06:15 PM -03
+root@debian10x64:/etc/nginx/sites-enabled#
+
+~~~~
