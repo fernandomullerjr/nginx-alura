@@ -77,8 +77,22 @@ git status
 # 03 Configuração de logs
 
 
+[01:18] Primeiramente, deixe-me eu decidir onde que eu vou salvar esses logs. Eu vou salvar aqui em mkdir Dev/nginx/logs/. Um detalhe importante é que o caminho para os nossos logs precisam ser em uma pasta que já exista, o NGINX não vai criar essa pasta, tem que ser em algum lugar que o usuário do NGINX tenha a permissão de escrita. Nós podemos definir qual o usuário do NGINX através de ‘user’.
+
+[01:46] Mas nessa pasta que eu acabei de criar, qualquer usuário tem permissão, então vamos nessa. Eu vou acessar os meus serviços - vim /usr/local/etc/nginx/servers/microsservicos.conf.
 
 
+- No /var/log não rola, porque não tem permissão, quem manda é o root:
+
+~~~~bash
 root@debian10x64:/etc/nginx/sites-enabled# ls -lhasp /var/ | grep log
 4.0K drwxr-xr-x 16 root root  4.0K Nov 11 00:00 log/
 root@debian10x64:/etc/nginx/sites-enabled#
+~~~~
+
+
+
+
+
+https://docs.nginx.com/nginx/admin-guide/monitoring/logging/
+https://www.digitalocean.com/community/tutorials/nginx-access-logs-error-logs
