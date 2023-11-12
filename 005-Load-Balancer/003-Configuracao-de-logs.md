@@ -99,7 +99,7 @@ https://www.digitalocean.com/community/tutorials/nginx-access-logs-error-logs
 
 
 
-- O diretório
+- O diretório /var/log/nginx/ pode ser utilizado, pois o NGINX consegue gravar nele
 
 ~~~~bash
 
@@ -208,3 +208,97 @@ ssh-add /home/fernando/.ssh/chave-debian10-github
 git push
 git status
 
+
+
+
+
+- Editado:
+
+serão desativados os access_log "gerais", porque teremos access_log separados para cada serviço
+
+~~~~conf
+        #access_log /var/log/nginx/access.log;
+        error_log /var/log/nginx/error.log;
+
+        log_format compression '$remote_addr - $remote_user [$time_local] '
+                                '"$request" $status $body_bytes_sent "$http_referer" '
+                                '"$http_user_agent" "$http_x_forwarded_for"';
+~~~~
+
+
+
+
+
+
+
+
+
+- Adicionando o caminho dos logs personalizados para cada serviço:
+/home/fernando/cursos/nginx-alura/005-Load-Balancer/sites/microservicos.conf
+
+access_log /var/log/nginx/servico1.log;
+
+access_log /var/log/nginx/servico2.log;
+
+
+~~~~conf
+server {
+        listen 8001;
+        server_name localhost;
+
+        access_log /var/log/nginx/servico1.log;
+
+        location / {
+            root /home/fernando/cursos/nginx-alura/005-Load-Balancer/arquivos/servico1;
+            index index.html;
+        }
+
+}
+
+server {
+        listen 8002;
+        server_name localhost;
+
+        access_log /var/log/nginx/servico2.log;
+
+        location / {
+            root /home/fernando/cursos/nginx-alura/005-Load-Balancer/arquivos/servico2;
+            index index.html;
+        }
+
+}
+~~~~
+
+
+
+
+
+
+
+- Ajustando nginx.conf e microservicos.conf
+
+~~~~bash
+
+root@debian10x64:/etc/nginx/sites-enabled# nginx -t
+nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+nginx: configuration file /etc/nginx/nginx.conf test is successful
+root@debian10x64:/etc/nginx/sites-enabled#
+root@debian10x64:/etc/nginx/sites-enabled#
+root@debian10x64:/etc/nginx/sites-enabled# nginx -s reload
+root@debian10x64:/etc/nginx/sites-enabled#
+
+~~~~
+
+
+
+
+
+# #####################################################################################################################################################
+# #####################################################################################################################################################
+# #####################################################################################################################################################
+# #####################################################################################################################################################
+## RESUMO
+
+- 
+- O diretório /var/log/nginx/ pode ser utilizado, pois o NGINX consegue gravar nele
+- Necessário ativar o log_format no arquivo nginx.conf
