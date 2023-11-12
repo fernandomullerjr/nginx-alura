@@ -293,6 +293,42 @@ root@debian10x64:/etc/nginx/sites-enabled#
 
 
 
+
+
+- Testando:
+
+acessando endpoint do Load Balancer:
+<http://192.168.0.110:8003/>
+
+~~~~bash
+
+root@debian10x64:/etc/nginx/sites-enabled# curl http://192.168.0.110:8003/
+Serviço 1
+root@debian10x64:/etc/nginx/sites-enabled#
+
+root@debian10x64:/home/fernando# tail -f /var/log/nginx/servico1.log
+127.0.0.1 - - [12/Nov/2023:18:09:11 -0300] "GET / HTTP/1.0" 200 11 "-" "curl/7.64.0"
+
+
+
+root@debian10x64:/etc/nginx/sites-enabled# curl http://192.168.0.110:8003/
+Serviço 2
+root@debian10x64:/etc/nginx/sites-enabled#
+
+root@debian10x64:/home/fernando# tail -f /var/log/nginx/servico2.log
+127.0.0.1 - - [12/Nov/2023:18:10:16 -0300] "GET / HTTP/1.0" 200 11 "-" "curl/7.64.0"
+
+
+~~~~
+
+
+
+
+
+
+
+
+
 # #####################################################################################################################################################
 # #####################################################################################################################################################
 # #####################################################################################################################################################
