@@ -195,3 +195,16 @@ http {
 
 
 
+
+
+
+
+
+git status
+git add .
+git commit -m "Módulo 5 - Load Balancer. Aula 01 Upstreams. Ajustes no nginx.conf, adicionando log_format."
+eval $(ssh-agent -s)
+ssh-add /home/fernando/.ssh/chave-debian10-github
+git push
+git status
+
