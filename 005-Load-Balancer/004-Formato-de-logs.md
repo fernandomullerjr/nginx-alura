@@ -79,12 +79,149 @@ git status
 
 - Editado:
 
+/home/fernando/cursos/nginx-alura/005-Load-Balancer/outros/nginx.conf
+
+adicionando informações para identificar de forma fácil
+adicionando nome main 
+
 ~~~~conf
         #access_log /var/log/nginx/access.log;
         error_log /var/log/nginx/error.log;
 
-        log_format compression 'Remote Addr: $remote_addr, Time: [$time_local] '
-                                '"$request" $status  "$http_referer" ';
+        log_format main 'Remote Addr: $remote_addr, Time: [$time_local], Request: "$request"'
+                                'Status: $status, Referer:  "$http_referer" ';
 ~~~~
 
+
+
+- Editando conf do microservicos, adicionando o nome main para os logs:
+
+/home/fernando/cursos/nginx-alura/005-Load-Balancer/sites/microservicos.conf
+
+~~~~conf
+server {
+        listen 8001;
+        server_name localhost;
+
+        access_log /var/log/nginx/servico1.log;
+
+        location / {
+            root /home/fernando/cursos/nginx-alura/005-Load-Balancer/arquivos/servico1 main;
+            index index.html;
+        }
+
+}
+
+server {
+        listen 8002;
+        server_name localhost;
+
+        access_log /var/log/nginx/servico2.log;
+
+        location / {
+            root /home/fernando/cursos/nginx-alura/005-Load-Balancer/arquivos/servico2 main;
+            index index.html;
+        }
+
+}
+~~~~
+
+
+
+
+- Validando.
+- ERRO:
+
+~~~~BASH
+
+root@debian10x64:/etc/nginx# nginx -t
+nginx: [emerg] invalid number of arguments in "root" directive in /etc/nginx/sites-enabled/microservicos.conf:8
+nginx: configuration file /etc/nginx/nginx.conf test failed
+root@debian10x64:/etc/nginx#
+
+~~~~
+
+
+
+
+
+
+
+- Ajustado:
+
+main estava no local errado
+movimentado para a linha do access_log
+
+~~~~conf
+server {
+        listen 8001;
+        server_name localhost;
+
+        access_log /var/log/nginx/servico1.log main;
+
+        location / {
+            root /home/fernando/cursos/nginx-alura/005-Load-Balancer/arquivos/servico1;
+            index index.html;
+        }
+
+}
+
+server {
+        listen 8002;
+        server_name localhost;
+
+        access_log /var/log/nginx/servico2.log main;
+
+        location / {
+            root /home/fernando/cursos/nginx-alura/005-Load-Balancer/arquivos/servico2;
+            index index.html;
+        }
+
+}
+~~~~
+
+
+
+- Validando.
+- OK agora:
+
+~~~~BASH
+
+root@debian10x64:/etc/nginx# nginx -t
+nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+nginx: configuration file /etc/nginx/nginx.conf test is successful
+root@debian10x64:/etc/nginx#
+root@debian10x64:/etc/nginx#
+root@debian10x64:/etc/nginx# nginx -s reload
+root@debian10x64:/etc/nginx#
+
+~~~~
+
+
+
+
+
+
+
+
+
+root@debian10x64:/etc/nginx/sites-enabled# curl http://192.168.0.110:8003/
+Serviço 1
+root@debian10x64:/etc/nginx/sites-enabled#
+
+root@debian10x64:/home/fernando# tail -f /var/log/nginx/servico1.log
+127.0.0.1 - - [12/Nov/2023:18:09:11 -0300] "GET / HTTP/1.0" 200 11 "-" "curl/7.64.0"
+Remote Addr: 127.0.0.1, Time: [12/Nov/2023:19:46:26 -0300], Request: "GET / HTTP/1.0"Status: 200, Referer:  "-"
+
+
+root@debian10x64:/etc/nginx/sites-enabled# curl http://192.168.0.110:8003/
+Serviço 2
+root@debian10x64:/etc/nginx/sites-enabled#
+root@debian10x64:/etc/nginx/sites-enabled#
+
+
+
+root@debian10x64:/home/fernando# tail -f /var/log/nginx/servico2.log
+127.0.0.1 - - [12/Nov/2023:18:10:16 -0300] "GET / HTTP/1.0" 200 11 "-" "curl/7.64.0"
+Remote Addr: 127.0.0.1, Time: [12/Nov/2023:19:46:54 -0300], Request: "GET / HTTP/1.0"Status: 200, Referer:  "-"
 
