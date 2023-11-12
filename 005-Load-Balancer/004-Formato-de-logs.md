@@ -203,7 +203,9 @@ root@debian10x64:/etc/nginx#
 
 
 
+- Testando
 
+~~~~bash
 
 root@debian10x64:/etc/nginx/sites-enabled# curl http://192.168.0.110:8003/
 Serviço 1
@@ -224,4 +226,82 @@ root@debian10x64:/etc/nginx/sites-enabled#
 root@debian10x64:/home/fernando# tail -f /var/log/nginx/servico2.log
 127.0.0.1 - - [12/Nov/2023:18:10:16 -0300] "GET / HTTP/1.0" 200 11 "-" "curl/7.64.0"
 Remote Addr: 127.0.0.1, Time: [12/Nov/2023:19:46:54 -0300], Request: "GET / HTTP/1.0"Status: 200, Referer:  "-"
+~~~~
+
+
+
+
+
+
+
+- Editando novamente
+- Removendo o Referer e ajustando posição:
+
+~~~~conf
+
+        log_format main 'Remote Addr: $remote_addr, Time: [$time_local], Request: "$request"'
+                                ' Status: $status ';
+~~~~
+
+
+
+
+- Ajustando:
+
+~~~~bash
+
+root@debian10x64:/etc/nginx# nginx -t
+nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+nginx: configuration file /etc/nginx/nginx.conf test is successful
+root@debian10x64:/etc/nginx#
+root@debian10x64:/etc/nginx#
+root@debian10x64:/etc/nginx# nginx -s reload
+root@debian10x64:/etc/nginx#
+
+~~~~
+
+
+
+
+- Testando:
+
+agora não vem mais o Referer, que não era interessante pra gente
+
+~~~~bash
+
+root@debian10x64:/etc/nginx/sites-enabled# curl http://192.168.0.110:8003/
+Serviço 1
+root@debian10x64:/etc/nginx/sites-enabled#
+
+root@debian10x64:/home/fernando# tail -f /var/log/nginx/servico1.log
+127.0.0.1 - - [12/Nov/2023:18:09:11 -0300] "GET / HTTP/1.0" 200 11 "-" "curl/7.64.0"
+Remote Addr: 127.0.0.1, Time: [12/Nov/2023:19:46:26 -0300], Request: "GET / HTTP/1.0"Status: 200, Referer:  "-"
+Remote Addr: 127.0.0.1, Time: [12/Nov/2023:19:51:13 -0300], Request: "GET / HTTP/1.0" Status: 200
+
+root@debian10x64:/etc/nginx/sites-enabled# curl http://192.168.0.110:8003/
+Serviço 2
+root@debian10x64:/etc/nginx/sites-enabled#
+
+root@debian10x64:/home/fernando# ^C
+root@debian10x64:/home/fernando# tail -f /var/log/nginx/servico2.log
+127.0.0.1 - - [12/Nov/2023:18:10:16 -0300] "GET / HTTP/1.0" 200 11 "-" "curl/7.64.0"
+Remote Addr: 127.0.0.1, Time: [12/Nov/2023:19:46:54 -0300], Request: "GET / HTTP/1.0"Status: 200, Referer:  "-"
+Remote Addr: 127.0.0.1, Time: [12/Nov/2023:19:51:15 -0300], Request: "GET / HTTP/1.0" Status: 200
+
+
+~~~~
+
+
+
+
+
+
+
+[02:56] Eu acesso esse serviço, “http://localhost:8003”. Esse serviço acessa “http://localhost:8002” ou “http://localhost:8001”.
+
+[03:04] Então, aqui no log do “Serviço 2” e no log do “Serviço 1”,se realmente tivéssemos máquinas diferentes, esse “Remote Addr”, ou seja, esse endereço remoto de quem está acessando o meu serviço iria ser sempre do load balancer.
+
+[03:18] E com isso, nós não poderíamos ter estatísticas para garantirmos que estamos recebendo um ataque realmente, quais usuários realmente estão acessando a nossa aplicação - nós não iríamos ter essa informação tão preciosa.
+
+[03:29] Então agora que nós configuramos log direito, mudamos o formato dele e estamos entendendo o problema, finalmente vamos aprender a corrigir no próximo vídeo.
 
