@@ -1,8 +1,10 @@
-# nginx-alura
+# Cursos sobre NGINX na Alura
 
+Parte 1
 nginx-servidor-web-proxy-reverso-api-gateway
 
-Curso sobre NGINX.
+Parte 2
+nginx-parte-2-performance-fastcgi-https
 
 
 
