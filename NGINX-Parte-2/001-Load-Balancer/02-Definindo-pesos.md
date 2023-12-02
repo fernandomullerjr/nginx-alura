@@ -44,3 +44,32 @@ git status
 [03:42] Posso configurar esse peso de forma proporcional. Vou manter configurado o serviço 1 com peso 2 e o serviço 2 vai estar no padrão dele, que é o peso 1. Vou salvar isso, mas lembrando, se alterei essa configuração preciso fazer o meu reload. Nginx recarregado sem erro nenhum, vamos ver o que vai acontecer quando faço as requisições.
 
 [04:10] Caiu uma requisição no serviço 1, recarreguei mais uma requisição no serviço 1, recarreguei agora no serviço 2. Quando recarrego de novo, serviço 1, serviço 1, serviço 2. A cada duas requisições no serviço 1, uma requisição cai no serviço 2. Dessa forma conseguimos balancear melhor nossa carga. E esse é um dos algoritmos possíveis para balancear a carga. Então vamos falar um pouco de teoria já que já vimos a prática no próximo vídeo.
+
+
+
+
+
+# #####################################################################################################################################################
+# #####################################################################################################################################################
+# #####################################################################################################################################################
+# #####################################################################################################################################################
+# 02 Definindo pesos
+
+
+root@debian10x64:/etc/nginx#
+root@debian10x64:/etc/nginx# cat sites-enabled/load-balancer.conf
+upstream servicos {
+        server localhost:8001;
+        server localhost:8002;
+}
+
+server {
+        listen 8003;
+        server_name localhost;
+
+        location / {
+            proxy_pass http://servicos;
+            proxy_set_header X-Real-IP $remote_addr;
+        }
+}
+root@debian10x64:/etc/nginx#

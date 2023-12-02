@@ -26,3 +26,7 @@ http://192.168.0.110:8080/algum.php
 - Endpoint do Load Balancer
 
 curl http://192.168.0.110:8003/
+
+
+- Logs
+tail -f /var/log/nginx/servico2.log
