@@ -72,3 +72,47 @@ git status
 [09:04] Agora, se algumas conexões, se um dos meus servidores é maior que outro, tem mais recursos, então o waited round Robin já resolve o caso. Agora se tenho requisições, conexões que vão demorar para ser respondidas e outras que são muito rápidas, então o algoritmo de least connections pode ajudar bastante. Eu posso ter muitas conexões demoradas em um servidor e passo a mandar mais requisições para o outro, dessa forma temos um rebalanceamento um pouco mais esperto.
 
 [09:33] Então se esse é um pouco mais esperto, por que eu utilizaria o round Robin? Porque ele exige menos do nosso load balancer, ele recebe a requisição e simplesmente vê, o último que mandei foi o servidor 2? Então, agora é 1. O último foi 1? Então, agora é 2. Já esse de least connections precisa armazenar quantas conexões estão abertas, ele tem um custo a mais. Depende do cenário onde você vai implementar cada um, mas essas são as características, prós e contras.
+
+
+
+
+
+
+
+
+
+# #####################################################################################################################################################
+# #####################################################################################################################################################
+# #####################################################################################################################################################
+# #####################################################################################################################################################
+# 04 Algoritmos de balanceamento
+
+
+## PADRÃO
+- Because no load‑balancing algorithm is specified in the upstream block, NGINX uses the default algorithm, Round Robin.
+
+
+
+<https://docs.nginx.com/nginx/admin-guide/load-balancer/http-load-balancer/>
+
+Round Robin – Requests are distributed evenly across the servers, with server weights taken into consideration. This method is used by default (there is no directive for enabling it):
+
+~~~~CONF
+upstream backend {
+   # no load balancing method is specified for Round Robin
+   server backend1.example.com;
+   server backend2.example.com;
+}
+~~~~
+
+
+
+Least Connections – A request is sent to the server with the least number of active connections, again with server weights taken into consideration:
+
+~~~~CONF
+upstream backend {
+    least_conn;
+    server backend1.example.com;
+    server backend2.example.com;
+}
+~~~~
