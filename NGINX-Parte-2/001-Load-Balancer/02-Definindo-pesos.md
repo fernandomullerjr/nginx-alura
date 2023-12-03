@@ -170,7 +170,7 @@ root@debian10x64:/etc/nginx#
 
 - Deu erro 404:
 
-
+~~~~bash
 root@debian10x64:/etc/nginx# curl http://192.168.0.110:8003/
 <html>
 <head><title>404 Not Found</title></head>
@@ -180,6 +180,254 @@ root@debian10x64:/etc/nginx# curl http://192.168.0.110:8003/
 </body>
 </html>
 root@debian10x64:/etc/nginx#
-
+~~~~
 
 verificando
+
+
+
+
+- Subindo o serviço do PHP
+
+~~~~bash
+root@debian10x64:/etc/nginx#
+root@debian10x64:/etc/nginx# php -S localhost:8000
+[Sat Dec  2 21:08:20 2023] PHP 8.0.30 Development Server (http://localhost:8000) started
+~~~~
+
+
+- Mesmo assim continua o erro 404:
+
+~~~~bash
+root@debian10x64:/etc/nginx# curl http://192.168.0.110:8003/
+<html>
+<head><title>404 Not Found</title></head>
+<body bgcolor="white">
+<center><h1>404 Not Found</h1></center>
+<hr><center>nginx/1.14.2</center>
+</body>
+</html>
+root@debian10x64:/etc/nginx#
+root@debian10x64:/etc/nginx#
+root@debian10x64:/etc/nginx# date
+Sat 02 Dec 2023 09:09:45 PM -03
+root@debian10x64:/etc/nginx#
+~~~~
+
+
+
+- Verificando logs do NGINX
+
+~~~~bash
+root@debian10x64:/var/log/nginx# ls -ltr
+total 132
+[...]]
+-rw-r----- 1 www-data adm  1763 Nov 12 20:13 access.log.1
+-rw-r----- 1 www-data adm   103 Dec  2 21:06 servico2.log
+-rw-r----- 1 www-data adm   309 Dec  2 21:08 servico1.log
+-rw-r----- 1 www-data adm  1583 Dec  2 21:08 error.log
+-rw-r----- 1 www-data adm   360 Dec  2 21:08 access.log
+root@debian10x64:/var/log/nginx#
+root@debian10x64:/var/log/nginx#
+root@debian10x64:/var/log/nginx# date
+Sat 02 Dec 2023 09:09:16 PM -03
+root@debian10x64:/var/log/nginx#
+
+root@debian10x64:/var/log/nginx# tail error.log
+2023/12/02 21:04:46 [notice] 77488#77488: signal process started
+2023/12/02 21:05:26 [error] 77490#77490: *121 "/home/fernando/cursos/nginx-alura/005-Load-Balancer/arquivos/servico1/index.html" is not found (2: No such file or directory), client: 127.0.0.1, server: localhost, request: "GET / HTTP/1.0", host: "servicos"
+2023/12/02 21:06:14 [error] 77489#77489: *122 connect() failed (111: Connection refused) while connecting to upstream, client: 192.168.0.110, server: localhost, request: "GET / HTTP/1.1", upstream: "http://[::1]:8001/", host: "192.168.0.110:8003"
+2023/12/02 21:06:14 [error] 77489#77489: *125 "/home/fernando/cursos/nginx-alura/005-Load-Balancer/arquivos/servico2/index.html" is not found (2: No such file or directory), client: 127.0.0.1, server: localhost, request: "GET / HTTP/1.0", host: "servicos"
+2023/12/02 21:08:28 [error] 77489#77489: *128 "/home/fernando/cursos/nginx-alura/005-Load-Balancer/arquivos/servico1/index.html" is not found (2: No such file or directory), client: 127.0.0.1, server: localhost, request: "GET / HTTP/1.0", host: "servicos"
+2023/12/02 21:08:30 [error] 77489#77489: *129 connect() failed (111: Connection refused) while connecting to upstream, client: 192.168.0.110, server: localhost, request: "GET / HTTP/1.1", upstream: "http://[::1]:8002/", host: "192.168.0.110:8003"
+2023/12/02 21:08:30 [error] 77489#77489: *132 "/home/fernando/cursos/nginx-alura/005-Load-Balancer/arquivos/servico1/index.html" is not found (2: No such file or directory), client: 127.0.0.1, server: localhost, request: "GET / HTTP/1.0", host: "servicos"
+2023/12/02 21:09:44 [error] 77489#77489: *133 connect() failed (111: Connection refused) while connecting to upstream, client: 192.168.0.110, server: localhost, request: "GET / HTTP/1.1", upstream: "http://[::1]:8001/", host: "192.168.0.110:8003"
+2023/12/02 21:09:44 [error] 77490#77490: *136 "/home/fernando/cursos/nginx-alura/005-Load-Balancer/arquivos/servico1/index.html" is not found (2: No such file or directory), client: 127.0.0.1, server: localhost, request: "GET / HTTP/1.0", host: "servicos"
+root@debian10x64:/var/log/nginx#
+root@debian10x64:/var/log/nginx#
+root@debian10x64:/var/log/nginx#
+~~~~
+
+
+
+- Como foi alterada a estrutura de pastas do projeto no meu Github, acabou trazendo este problema.
+
+- Copiando arquivos HTML dos Microserviços para nova pasta:
+
+~~~~bash
+root@debian10x64:/etc/nginx# mkdir /var/www/site-aula-nginx-alura
+root@debian10x64:/etc/nginx#
+
+root@debian10x64:/etc/nginx# cp -R /home/fernando/cursos/nginx-alura/NGINX-Parte-1/005-Load-Balancer/arquivos/servico1 /var/www/site-aula-nginx-alura
+root@debian10x64:/etc/nginx#
+root@debian10x64:/etc/nginx#
+root@debian10x64:/etc/nginx#
+root@debian10x64:/etc/nginx# ls /var/www/site-aula-nginx-alura
+servico1
+root@debian10x64:/etc/nginx# cp -R /home/fernando/cursos/nginx-alura/NGINX-Parte-1/005-Load-Balancer/arquivos/servico2 /var/www/site-aula-nginx-alura
+root@debian10x64:/etc/nginx#
+root@debian10x64:/etc/nginx#
+root@debian10x64:/etc/nginx#
+root@debian10x64:/etc/nginx# ls /var/www/site-aula-nginx-alura
+servico1  servico2
+root@debian10x64:/etc/nginx#
+~~~~
+
+
+
+- Ajustando conf do NGINX referente aos Microserviços:
+
+- ANTES
+
+~~~~conf
+server {
+        listen 8001;
+        server_name localhost;
+
+        access_log /var/log/nginx/servico1.log main;
+
+        location / {
+            root /home/fernando/cursos/nginx-alura/005-Load-Balancer/arquivos/servico1;
+            index index.html;
+        }
+
+}
+
+server {
+        listen 8002;
+        server_name localhost;
+
+        access_log /var/log/nginx/servico2.log main;
+
+        location / {
+            root /home/fernando/cursos/nginx-alura/005-Load-Balancer/arquivos/servico2;
+            index index.html;
+        }
+
+}
+~~~~
+
+
+
+- DEPOIS:
+
+~~~~conf
+server {
+        listen 8001;
+        server_name localhost;
+
+        access_log /var/log/nginx/servico1.log main;
+
+        location / {
+            root /var/www/site-aula-nginx-alura/servico1;
+            index index.html;
+        }
+
+}
+
+server {
+        listen 8002;
+        server_name localhost;
+
+        access_log /var/log/nginx/servico2.log main;
+
+        location / {
+            root /var/www/site-aula-nginx-alura/servico2;
+            index index.html;
+        }
+
+}
+~~~~
+
+
+
+
+- Ajustando
+
+~~~~bash
+root@debian10x64:/etc/nginx# vi sites-enabled/microservicos.conf
+root@debian10x64:/etc/nginx#
+root@debian10x64:/etc/nginx#
+root@debian10x64:/etc/nginx#
+root@debian10x64:/etc/nginx#
+root@debian10x64:/etc/nginx# nginx -t
+nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+nginx: configuration file /etc/nginx/nginx.conf test is successful
+root@debian10x64:/etc/nginx#
+root@debian10x64:/etc/nginx#
+root@debian10x64:/etc/nginx# nginx -s reload
+root@debian10x64:/etc/nginx#
+root@debian10x64:/etc/nginx#
+~~~~
+
+
+
+
+- Novo teste
+curl http://192.168.0.110:8003/
+
+~~~~bash
+
+root@debian10x64:/etc/nginx# curl http://192.168.0.110:8003/
+Serviço 1
+root@debian10x64:/etc/nginx#
+root@debian10x64:/etc/nginx# curl http://192.168.0.110:8003/
+Serviço 2
+root@debian10x64:/etc/nginx#
+root@debian10x64:/etc/nginx# curl http://192.168.0.110:8003/
+Serviço 1
+root@debian10x64:/etc/nginx# curl http://192.168.0.110:8003/
+Serviço 1
+root@debian10x64:/etc/nginx#
+root@debian10x64:/etc/nginx# curl http://192.168.0.110:8003/
+Serviço 1
+root@debian10x64:/etc/nginx#
+root@debian10x64:/etc/nginx#
+root@debian10x64:/etc/nginx# curl http://192.168.0.110:8003/
+Serviço 1
+root@debian10x64:/etc/nginx# curl http://192.168.0.110:8003/
+Serviço 2
+root@debian10x64:/etc/nginx#
+root@debian10x64:/etc/nginx#
+root@debian10x64:/etc/nginx#
+root@debian10x64:/etc/nginx# curl http://192.168.0.110:8003/
+Serviço 1
+root@debian10x64:/etc/nginx#
+root@debian10x64:/etc/nginx#
+root@debian10x64:/etc/nginx#
+root@debian10x64:/etc/nginx#
+root@debian10x64:/etc/nginx# curl http://192.168.0.110:8003/
+Serviço 1
+root@debian10x64:/etc/nginx# curl http://192.168.0.110:8003/
+Serviço 1
+root@debian10x64:/etc/nginx# curl http://192.168.0.110:8003/
+Serviço 2
+root@debian10x64:/etc/nginx# curl http://192.168.0.110:8003/
+Serviço 1
+root@debian10x64:/etc/nginx#
+
+~~~~
+
+
+Balanceamento ocorreu conforme o esperado, respeitando o Weight.
+
+
+- Configuração atual do Load Balancer:
+
+~~~~conf
+upstream servicos {
+        server localhost:8001 weight=3;
+        server localhost:8002;
+}
+
+server {
+        listen 8003;
+        server_name localhost;
+
+        location / {
+            proxy_pass http://servicos;
+            proxy_set_header X-Real-IP $remote_addr;
+        }
+}
+
+~~~~
