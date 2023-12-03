@@ -55,9 +55,9 @@ git status
 # #####################################################################################################################################################
 # 02 Definindo pesos
 
+- Configuração atual do nosso Load Balancer no NGINX:
 
-root@debian10x64:/etc/nginx#
-root@debian10x64:/etc/nginx# cat sites-enabled/load-balancer.conf
+~~~~CONF
 upstream servicos {
         server localhost:8001;
         server localhost:8002;
@@ -72,4 +72,114 @@ server {
             proxy_set_header X-Real-IP $remote_addr;
         }
 }
+~~~~
+
+
+
+
+
+## Weighted load balancing
+
+It is also possible to influence nginx load balancing algorithms even further by using server weights.
+
+In the examples above, the server weights are not configured which means that all specified servers are treated as equally qualified for a particular load balancing method.
+
+With the round-robin in particular it also means a more or less equal distribution of requests across the servers — provided there are enough requests, and when the requests are processed in a uniform manner and completed fast enough.
+
+When the weight parameter is specified for a server, the weight is accounted as part of the load balancing decision.
+
+        upstream myapp1 {
+            server srv1.example.com weight=3;
+            server srv2.example.com;
+            server srv3.example.com;
+        }
+
+With this configuration, every 5 new requests will be distributed across the application instances as the following: 3 requests will be directed to srv1, one request will go to srv2, and another one — to srv3.
+
+It is similarly possible to use weights with the least-connected and ip-hash load balancing in the recent versions of nginx. 
+
+
+
+
+
+
+
+
+
+- Configuração onde o nosso Load Balancer no NGINX vai efetuar mais requisições para o servidor1, já que tem o peso maior.
+- Já o serviço2 vai ficar com o peso default, que é o peso 1.
+- Configuração ajustada:
+
+~~~~CONF
+upstream servicos {
+        server localhost:8001 weight=3;
+        server localhost:8002;
+}
+
+server {
+        listen 8003;
+        server_name localhost;
+
+        location / {
+            proxy_pass http://servicos;
+            proxy_set_header X-Real-IP $remote_addr;
+        }
+}
+~~~~
+
+
+
+
+- Ajustando:
+
+~~~~bash
+
+root@debian10x64:/etc/nginx# vi sites-enabled/load-balancer.conf
 root@debian10x64:/etc/nginx#
+root@debian10x64:/etc/nginx#
+root@debian10x64:/etc/nginx#
+root@debian10x64:/etc/nginx# nginx -t
+nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+nginx: configuration file /etc/nginx/nginx.conf test is successful
+root@debian10x64:/etc/nginx#
+root@debian10x64:/etc/nginx#
+root@debian10x64:/etc/nginx# nginx -s reload
+root@debian10x64:/etc/nginx#
+root@debian10x64:/etc/nginx#
+root@debian10x64:/etc/nginx# cat sites-enabled/load-balancer.conf
+upstream servicos {
+        server localhost:8001 weight=3;
+        server localhost:8002;
+}
+
+server {
+        listen 8003;
+        server_name localhost;
+
+        location / {
+            proxy_pass http://servicos;
+            proxy_set_header X-Real-IP $remote_addr;
+        }
+}
+root@debian10x64:/etc/nginx#
+
+~~~~
+
+
+
+
+- Deu erro 404:
+
+
+root@debian10x64:/etc/nginx# curl http://192.168.0.110:8003/
+<html>
+<head><title>404 Not Found</title></head>
+<body bgcolor="white">
+<center><h1>404 Not Found</h1></center>
+<hr><center>nginx/1.14.2</center>
+</body>
+</html>
+root@debian10x64:/etc/nginx#
+
+
+verificando
